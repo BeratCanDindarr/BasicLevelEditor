@@ -11,6 +11,10 @@ using System;
 [ExecuteInEditMode()]
 public class Creator : MonoBehaviour
 {
+    private bool isStartedLevelEditor = false;
+
+
+
     public GameObject SquareGameObject;
     public GameObject[] test;
     private Camera _mainCam;
@@ -40,6 +44,10 @@ public class Creator : MonoBehaviour
     }
     private void OnGUI()
     {
+        if (!isStartedLevelEditor)
+        {
+            return;
+        }
         if (Event.current.type == EventType.Layout || Event.current.type == EventType.Repaint)
         {
             UnityEditor.EditorUtility.SetDirty(this);
@@ -83,7 +91,7 @@ public class Creator : MonoBehaviour
         Debug.Log("Create");
         LevelData level = ScriptableObject.CreateInstance<LevelData>();
         //string path = "Assets/Level/LevelName.asset";
-        string path = UnityEditor.AssetDatabase.GenerateUniqueAssetPath("Assets/Level/LevelName.asset");
+        string path = UnityEditor.AssetDatabase.GenerateUniqueAssetPath("Assets/Resources/Level/LevelName.asset");
         AssetDatabase.CreateAsset(level, path);
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
@@ -185,6 +193,11 @@ public class Creator : MonoBehaviour
     {
         SelectedLevel.ClearObjects();
         Clear();
+    }
+
+    public void ChangeStartedLevelEditor(bool isActive)
+    {
+        isStartedLevelEditor = isActive;
     }
 }
 #endif

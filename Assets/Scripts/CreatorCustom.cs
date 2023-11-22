@@ -12,22 +12,25 @@ public class CreatorCustom : Editor
     Editor gameObjectEditor;
     private PreviewRenderUtility previewRenderUtility;
     private UnityEditor.MeshPreview preview;
-
+    private bool isStartedLevelEditor = false;
 
     private void OnEnable()
     {
         creator = (Creator)target;
+        
     }
-    public void Initialize()
-    {
-        previewRenderUtility = new PreviewRenderUtility();
-        previewRenderUtility.camera.clearFlags = CameraClearFlags.Skybox;
-        previewRenderUtility.camera.transform.position = new Vector3(0,0,-10);
-
-    }
+    
     public override void OnInspectorGUI()
     {
-        
+        if (!isStartedLevelEditor)
+        {
+            if (GUILayout.Button("Start Level Editor"))
+            {
+                isStartedLevelEditor = true;
+                creator.ChangeStartedLevelEditor(isStartedLevelEditor);
+            }
+            return;
+        }
         base.OnInspectorGUI();
 
 
@@ -106,6 +109,11 @@ public class CreatorCustom : Editor
         if (GUILayout.Button("Clear Level Obj", GUILayout.Width(200)))
         {
             creator.ClearLevel();
+        }
+        if (GUILayout.Button("Stop Level Editor"))
+        {
+            isStartedLevelEditor = false;
+            creator.ChangeStartedLevelEditor(isStartedLevelEditor);
         }
 
     }

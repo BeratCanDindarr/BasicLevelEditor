@@ -12,7 +12,7 @@ public class LevelData : ScriptableObject
 
     
     public List<LevelObj> objs;
-
+    
 
     public void AddNewObj(LevelObj levelObj)
     {
