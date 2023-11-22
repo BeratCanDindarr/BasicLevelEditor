@@ -14,10 +14,16 @@ public class CreatorCustom : Editor
     private UnityEditor.MeshPreview preview;
     private bool isStartedLevelEditor = false;
 
+
+
+
+
+    
+
     private void OnEnable()
     {
         creator = (Creator)target;
-        
+        isStartedLevelEditor = creator.ReturnIsStartedBool();
     }
     
     public override void OnInspectorGUI()
@@ -66,7 +72,19 @@ public class CreatorCustom : Editor
         //serializedObject.Update();
         //EditorGUILayout.PropertyField(property,true);
         //serializedObject.ApplyModifiedProperties();
-       
+        for (int i = 0; i < 3; i++)
+        {
+            var _content = new GUIContent("Click me", creator.loadTexture()); // file name in the resources folder without the (.png) extension
+
+            if (GUILayout.Button(_content))
+            {
+                creator.testii(i);
+            }
+            
+
+        }
+
+
 
         int size = EditorGUILayout.IntField("object size", creator.test.Length);
         if (creator.test != null && size != creator.test.Length)
@@ -78,6 +96,10 @@ public class CreatorCustom : Editor
 
         GUIContent ChangeAbleLevelName = new GUIContent("LevelName");
         creator.LevelIdx = EditorGUILayout.Popup(ChangeAbleLevelName,creator.LevelIdx,creator.LevelName.ToArray());
+        if (GUILayout.Button("Test Level", GUILayout.Width(200)))
+        {
+            creator.loadTexture();
+        }
         if (GUILayout.Button("Select Level", GUILayout.Width(200)))
         {
             creator.SelectLevel();

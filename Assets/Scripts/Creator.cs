@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Diagnostics;
 using System.IO;
 using System;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 #if UNITY_EDITOR
 [ExecuteInEditMode()]
@@ -13,7 +14,7 @@ public class Creator : MonoBehaviour
 {
     private bool isStartedLevelEditor = false;
 
-
+    public Texture2D test2D;
 
     public GameObject SquareGameObject;
     public GameObject[] test;
@@ -123,6 +124,7 @@ public class Creator : MonoBehaviour
 
     public void Save()
     {
+        
         for (int i = 0; i < CreatedObj.Count; i++)
         {
             LevelObj newLevel = new LevelObj();
@@ -198,6 +200,28 @@ public class Creator : MonoBehaviour
     public void ChangeStartedLevelEditor(bool isActive)
     {
         isStartedLevelEditor = isActive;
+    }
+    public bool ReturnIsStartedBool()
+    {
+        return isStartedLevelEditor;
+    }
+    public Texture2D loadTexture()
+    {
+        test2D = GetPrefabPreview("Assets/Resources/Prefabs/Cube.prefab");
+        return test2D;
+    }
+    static Texture2D GetPrefabPreview(string path)
+    {
+        Debug.Log("Generate preview for " + path);
+        GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+        var editor = UnityEditor.Editor.CreateEditor(prefab);
+        Texture2D tex = editor.RenderStaticPreview(path, null, 200, 200);
+        EditorWindow.DestroyImmediate(editor);
+        return tex;
+    }
+    public void testii(int a)
+    {
+        Debug.Log(a);
     }
 }
 #endif
