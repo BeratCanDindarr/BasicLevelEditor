@@ -144,11 +144,6 @@ public class Creator : MonoBehaviour
     
     public void Clear()
     {
-        //foreach (var obj in CreatedObj)
-        //{
-        //    CreatedObj.Remove(obj);
-        //    Destroy(obj);
-        //}
         for (int i = 0; i< CreatedObj.Count; i++) {
             //Destroy(CreatedObj[i]);
             DestroyImmediate(CreatedObj[i]);
@@ -178,13 +173,6 @@ public class Creator : MonoBehaviour
     }
     public void Search()
     {
-        //DirectoryInfo dir = new DirectoryInfo("Assets/Level");
-        //FileInfo[] info = dir.GetFiles("LevelName*.asset");
-        //foreach (FileInfo obj in info)
-        //{
-        //    LevelName.Add(obj.Name);
-        //    Debug.Log(obj.Name);
-        //}
         if (LevelName.Count > 0)
         {
             LevelName.Clear();
@@ -200,17 +188,8 @@ public class Creator : MonoBehaviour
         }
     }
 
-    //[MenuItem("AssetDatabase/LoadAllAssetsAtPath")]
     public void Load()
     {
-        //SelectedLevel = AssetDatabase.LoadAllAssetsAtPath("Assets/Level/" + LevelName[LevelIdx]);
-
-        //Debug.Log(a.GetType());
-        //all load script
-
-        //DirectoryInfo dir = new DirectoryInfo("Assets/Level");
-        //FileInfo info = dir.GetObjectData(LevelName[LevelIdx]);
-        //Debug.Log(info.GetType());
         for (int i = 0; i<SelectedLevel.objs.Count;i++)
         {
             ItemCreate(SquareGameObject, SelectedLevel.objs[i].pos);
@@ -239,13 +218,9 @@ public class Creator : MonoBehaviour
     {
         if (SelectedObj != null)
         {
-            
             CreatedObj.Remove(SelectedObj);
-            //Destroy(SelectedObj);
             DestroyImmediate(SelectedObj);
             Debug.Log("SelectedObj Silindi");
-
-
         }
         else
         {
