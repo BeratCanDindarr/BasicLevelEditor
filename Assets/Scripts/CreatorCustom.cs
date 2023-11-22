@@ -12,13 +12,15 @@ public class CreatorCustom : Editor
     Editor gameObjectEditor;
     private PreviewRenderUtility previewRenderUtility;
     private UnityEditor.MeshPreview preview;
+
     private bool isStartedLevelEditor = false;
 
+    private bool _showPrefabButton = false;
+
+    List<Texture2D> textureArray;
 
 
 
-
-    
 
     private void OnEnable()
     {
@@ -32,70 +34,71 @@ public class CreatorCustom : Editor
         {
             if (GUILayout.Button("Start Level Editor"))
             {
+                isStartedLevelEditor = creator.ReturnIsStartedBool();
+
+
                 isStartedLevelEditor = true;
                 creator.ChangeStartedLevelEditor(isStartedLevelEditor);
+
+
+
+                textureArray = creator.loadTexture();
             }
             return;
         }
         base.OnInspectorGUI();
 
 
-        //EditorGUI.BeginChangeCheck();
+      
 
-        ////creator.SquareGameObject = (GameObject)EditorGUILayout.ObjectField(creator.SquareGameObject, typeof(GameObject), true);
-
-
-        //if (EditorGUI.EndChangeCheck())
-        //{
-        //    if (gameObjectEditor != null) DestroyImmediate(this);
-        //}
-
-        //GUIStyle bgColor = new GUIStyle();
-
-        ////bgColor.normal.background = ;
-
-        //if (creator.SquareGameObject != null)
-        //{
-        //    if (gameObjectEditor == null)
-
-        //        gameObjectEditor = Editor.CreateEditor(creator.SquareGameObject);
-        //    gameObjectEditor.OnInteractivePreviewGUI(GUILayoutUtility.GetRect(200, 200), bgColor);
-        //}
-
-        //preview.mesh = creator.SquareGameObject.GetComponent<MeshFilter>().sharedMesh;
-        //var rect = GUILayoutUtility.GetRect(1, 200);
-        //preview.OnPreviewGUI(rect, "TextField");
-
-        //preview.OnPreviewSettings();
-
-        //var property = serializedObject.FindProperty("test");
-        //serializedObject.Update();
-        //EditorGUILayout.PropertyField(property,true);
-        //serializedObject.ApplyModifiedProperties();
-        for (int i = 0; i < 3; i++)
+        _showPrefabButton = EditorGUILayout.Foldout(_showPrefabButton, "Game Prefabs");
+        if (_showPrefabButton)
         {
-            var _content = new GUIContent("Click me", creator.loadTexture()); // file name in the resources folder without the (.png) extension
-
-            if (GUILayout.Button(_content))
+                int arrayLenght = textureArray.Count;
+                int a = arrayLenght / 3;
+                int b = arrayLenght % 3;
+                int p = 0;
+            for (int i = 0; i < a; i++)
             {
-                creator.testii(i);
+                GUILayout.BeginHorizontal();
+                for (int j = 0; j < 3; j++)
+                {
+                    var _content = new GUIContent("buton ", textureArray[p]); // file name in the resources folder without the (.png) extension
+                    if (GUILayout.Button(_content, GUILayout.Width(100)))
+                    {
+                        creator.testii(p);
+                    }
+                    p++;
+                }
+                GUILayout.EndHorizontal();
+
+
+
             }
-            
+                for (int j = 0;j < b; j++)
+                {
+                    var _content = new GUIContent("buton ", textureArray[j]);
+                    GUILayout.BeginHorizontal();
+                    if (GUILayout.Button(_content))
+                    {
+                        creator.testii(j);
+                    }
+                    GUILayout.EndHorizontal();
+                }
 
         }
 
 
-
-        int size = EditorGUILayout.IntField("object size", creator.test.Length);
-        if (creator.test != null && size != creator.test.Length)
-            creator.test = new GameObject[size];
-        for (int i = 0; i < size; i++)
-        {
-            creator.test[i] = EditorGUILayout.ObjectField("Object " + i.ToString(), creator.test[i], typeof(GameObject), false,GUILayout.MinWidth(50),GUILayout.MinHeight(50)) as GameObject;
-        }
+        //int size = EditorGUILayout.IntField("object size", creator.test.Length);
+        //if (creator.test != null && size != creator.test.Length)
+        //    creator.test = new GameObject[size];
+        //for (int i = 0; i < size; i++)
+        //{
+        //    creator.test[i] = EditorGUILayout.ObjectField("Object " + i.ToString(), creator.test[i], typeof(GameObject), false, GUILayout.MinWidth(50), GUILayout.MinHeight(50)) as GameObject;
+        //}
 
         GUIContent ChangeAbleLevelName = new GUIContent("LevelName");
-        creator.LevelIdx = EditorGUILayout.Popup(ChangeAbleLevelName,creator.LevelIdx,creator.LevelName.ToArray());
+        creator.LevelIdx = EditorGUILayout.Popup(ChangeAbleLevelName, creator.LevelIdx, creator.LevelName.ToArray());
         if (GUILayout.Button("Test Level", GUILayout.Width(200)))
         {
             creator.loadTexture();

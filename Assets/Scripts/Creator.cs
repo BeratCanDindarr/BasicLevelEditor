@@ -7,6 +7,7 @@ using UnityEngine.Diagnostics;
 using System.IO;
 using System;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Linq;
 
 #if UNITY_EDITOR
 [ExecuteInEditMode()]
@@ -33,6 +34,10 @@ public class Creator : MonoBehaviour
 
     [SerializeField]
     private List<LevelObj> _levelObject;
+
+
+    List<Texture2D> PrefabTexture = new List<Texture2D>();
+
 
     public int LevelIdx = 0;
     public List<String> LevelName;
@@ -91,7 +96,6 @@ public class Creator : MonoBehaviour
     {
         Debug.Log("Create");
         LevelData level = ScriptableObject.CreateInstance<LevelData>();
-        //string path = "Assets/Level/LevelName.asset";
         string path = UnityEditor.AssetDatabase.GenerateUniqueAssetPath("Assets/Resources/Level/LevelName.asset");
         AssetDatabase.CreateAsset(level, path);
         AssetDatabase.SaveAssets();
@@ -137,6 +141,10 @@ public class Creator : MonoBehaviour
     }
     public void Search()
     {
+        
+
+
+
         if (LevelName.Count > 0)
         {
             LevelName.Clear();
@@ -205,15 +213,31 @@ public class Creator : MonoBehaviour
     {
         return isStartedLevelEditor;
     }
-    public Texture2D loadTexture()
+    public List<Texture2D> loadTexture()
     {
-        test2D = GetPrefabPreview("Assets/Resources/Prefabs/Cube.prefab");
-        return test2D;
+        //GameObject[] prefabs = Resources.LoadAll<GameObject>("Prefabs/");
+        //string[] paths = new string[prefabs.Length];
+
+        if (PrefabTexture != null)
+        {
+            PrefabTexture.Clear();
+        }
+        var dirs = Directory.EnumerateFiles("Assets/Resources/Prefabs/", "*.*", SearchOption.AllDirectories)
+            .Where(s => s.EndsWith(".prefab"));
+       
+        
+        foreach (string dir in dirs)
+        {
+            PrefabTexture.Add(GetPrefabPreview(dir));
+        }
+
+        return PrefabTexture;
     }
     static Texture2D GetPrefabPreview(string path)
     {
         Debug.Log("Generate preview for " + path);
         GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+        
         var editor = UnityEditor.Editor.CreateEditor(prefab);
         Texture2D tex = editor.RenderStaticPreview(path, null, 200, 200);
         EditorWindow.DestroyImmediate(editor);
