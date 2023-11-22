@@ -7,7 +7,7 @@ using UnityEngine.Diagnostics;
 using System.IO;
 using System;
 
-
+#if UNITY_EDITOR
 [ExecuteInEditMode()]
 public class Creator : MonoBehaviour
 {
@@ -20,7 +20,7 @@ public class Creator : MonoBehaviour
 
     public List<GameObject> CreatedObj;
 
-    public List<LevelData> levels;
+    public LevelData[] levels;
 
     public GameObject SelectedObj;
 
@@ -38,42 +38,6 @@ public class Creator : MonoBehaviour
         _mainCam = Camera.main;
         Debug.Log(SquareGameObject.transform.localScale.y);
     }
-
-#if UNITY_EDITOR
-    
-    // Update is called once per frame
-    //void Update()
-    //{
-    //    //Create Obj
-    //    if (Input.GetMouseButtonDown(0))
-    //    {
-    //        Ray ray = _mainCam.ScreenPointToRay(Input.mousePosition);
-            
-    //        if (Physics.Raycast(ray, out hit,100))
-    //        {
-    //            if (hit.collider.CompareTag("Ground"))
-    //            {
-    //                if (SelectedLevel != null)
-    //                {
-    //                    Vector3 objPosition = new Vector3(hit.point.x, hit.point.y + (SquareGameObject.transform.localScale.y / 2), hit.point.z);
-    //                    var a = Instantiate(SquareGameObject,objPosition,transform.rotation);
-    //                    CreatedObj.Add(a);
-                        
-    //                }
-    //                else
-    //                {
-    //                    Debug.Log("Bir Level Oluþturun Veya Seçin");
-    //                }
-
-    //            }
-    //            else 
-    //            {
-    //                SelectedObj = hit.collider.gameObject;
-    //            }
-    //        }
-    //    }
-    //}
-#endif
     private void OnGUI()
     {
         if (Event.current.type == EventType.Layout || Event.current.type == EventType.Repaint)
@@ -99,8 +63,6 @@ public class Creator : MonoBehaviour
                 {
                     Vector3 objPosition = new Vector3(hit.point.x, hit.point.y + (SquareGameObject.transform.localScale.y / 2), hit.point.z);
                     ItemCreate(SquareGameObject,objPosition);
-                    //var a = Instantiate(SquareGameObject, objPosition, transform.rotation);
-                    //CreatedObj.Add(a);
 
                 }
                 else
@@ -125,10 +87,6 @@ public class Creator : MonoBehaviour
         AssetDatabase.CreateAsset(level, path);
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
-        //EditorUtility.FocusProjectWindow();
-        //inspectoru odaklýyor direkt 
-        //Selection.activeObject = level;
-        levels.Add(level);
         SelectedLevel = level;
         Search();
         for (int i = 0; i < LevelName.Count; i++)
@@ -140,12 +98,12 @@ public class Creator : MonoBehaviour
         }
         
     }
-#if UNITY_EDITOR
+
     
     public void Clear()
     {
         for (int i = 0; i< CreatedObj.Count; i++) {
-            //Destroy(CreatedObj[i]);
+            
             DestroyImmediate(CreatedObj[i]);
             
         }
@@ -153,7 +111,7 @@ public class Creator : MonoBehaviour
         Debug.Log("Clear");
         
     }
-#endif
+
 
     public void Save()
     {
@@ -164,11 +122,7 @@ public class Creator : MonoBehaviour
             newLevel.pos = CreatedObj[i].transform.position;
             SelectedLevel.AddNewObj(newLevel);
         }
-        //SelectedLevel.objs = new List<LevelObj>(levelObject.Count);
-        //foreach (LevelObj obj in _levelObject)
-        //{
-        //    SelectedLevel.AddNewObj(obj);
-        //}
+        
         Debug.Log("Save");
     }
     public void Search()
@@ -181,7 +135,7 @@ public class Creator : MonoBehaviour
         {
             LevelName.Add(null);
         }
-
+        levels = Resources.LoadAll<LevelData>("Level/");
         foreach (LevelData data in levels)
         {
             LevelName.Add(data.name);
@@ -233,3 +187,4 @@ public class Creator : MonoBehaviour
         Clear();
     }
 }
+#endif

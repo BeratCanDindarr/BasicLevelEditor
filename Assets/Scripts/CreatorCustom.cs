@@ -63,14 +63,7 @@ public class CreatorCustom : Editor
         //serializedObject.Update();
         //EditorGUILayout.PropertyField(property,true);
         //serializedObject.ApplyModifiedProperties();
-        GUILayout.BeginHorizontal();
-
-        if (GUILayout.Button(Resources.Load<Texture>("Assets/Cube")))
-        {
-            creator.
-        }
-
-        GUILayout.EndHorizontal();
+       
 
         int size = EditorGUILayout.IntField("object size", creator.test.Length);
         if (creator.test != null && size != creator.test.Length)
