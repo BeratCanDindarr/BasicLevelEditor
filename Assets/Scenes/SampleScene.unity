@@ -153,7 +153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   test2D: {fileID: 1504286235}
-  SquareGameObject: {fileID: 3710860745648286617, guid: 6361ca3d14b97eb43a7ea5ff52fecc6b, type: 3}
+  SquareGameObject: {fileID: 5805649373049172571, guid: ab5b539c6502f844e86fbb3fdaba4a9b, type: 3}
   ObjPrefabs:
   - {fileID: 5957768793655874798, guid: a953a966eec3ae345962ae9229d8fc7f, type: 3}
   - {fileID: 1423160720554490254, guid: 6e8e028a51b47ff46b4c3d20f5f58905, type: 3}
@@ -166,6 +166,7 @@ MonoBehaviour:
   test:
   - {fileID: 0}
   mesh: {fileID: 0}
+  newLevelObj: []
   CreatedObj: []
   levels:
   - {fileID: 11400000, guid: 37f3002a8c21b6248a202a62776b3917, type: 2}
@@ -181,9 +182,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 04987c58578bcae4d8a7b2cd225c7e00, type: 2}
   - {fileID: 11400000, guid: 8e79b4f88b068f24d807787a12e9a152, type: 2}
   SelectedObj: {fileID: 0}
-  SelectedLevel: {fileID: 11400000, guid: 4599acc7b28457444a59687c32d8846c, type: 2}
+  SelectedLevel: {fileID: 11400000, guid: c2fe7bfec9cd73146a6d5231ab2bb266, type: 2}
   _levelObject: []
-  LevelIdx: 2
+  LevelIdx: 7
   LevelName:
   - 
   - LevelName

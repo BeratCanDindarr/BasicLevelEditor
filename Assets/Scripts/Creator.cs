@@ -51,6 +51,12 @@ public class Creator : MonoBehaviour
     public int LevelIdx = 0;
     public List<String> LevelName;
     RaycastHit hit;
+
+
+
+
+    private bool isLoadedTexture = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -141,7 +147,7 @@ public class Creator : MonoBehaviour
 
     public void Save()
     {
-        
+        SelectedLevel.ClearObjects();
         for (int i = 0; i < CreatedObj.Count; i++)
         {
             //LevelObj newLevel = new LevelObj();
@@ -165,6 +171,8 @@ public class Creator : MonoBehaviour
         newLevel.pos = pos;
         newLevelObj.Add(newLevel);
     }
+   
+
     public void Search()
     {
         
@@ -191,12 +199,14 @@ public class Creator : MonoBehaviour
         for (int i = 0; i<SelectedLevel.objs.Count;i++)
         {
             ItemCreate(SelectedLevel.objs[i].Obj, SelectedLevel.objs[i].pos);
+            newLevelObj.Add(SelectedLevel.objs[i]);
         }
         Debug.Log("Load");
     }
     private void ItemCreate(GameObject prefab,Vector3 pos)
     {
         GameObject obj = Instantiate(prefab,pos,prefab.transform.rotation);
+        
         CreatedObj.Add(obj);
 
     }
@@ -248,8 +258,13 @@ public class Creator : MonoBehaviour
     {
         return isStartedLevelEditor;
     }
+    public bool ReturnIsLoadedTextureBool()
+    {
+        return isLoadedTexture;
+    }
     public List<Texture2D> loadTexture()
     {
+        isLoadedTexture = true;
         //GameObject[] prefabs = Resources.LoadAll<GameObject>("Prefabs/");
         //string[] paths = new string[prefabs.Length];
 
@@ -259,7 +274,11 @@ public class Creator : MonoBehaviour
         }
         var dirs = Directory.EnumerateFiles("Assets/Resources/Prefabs/", "*.*", SearchOption.AllDirectories)
             .Where(s => s.EndsWith(".prefab"));
-
+        if (dirs == null)
+        {
+            isLoadedTexture = false;
+            Debug.LogError("folder is empty please add the prefabs this folder Resources/Prefabs");
+        }
         foreach (string dir in dirs)
         {
             PrefabTexture.Add(GetPrefabPreview(dir));

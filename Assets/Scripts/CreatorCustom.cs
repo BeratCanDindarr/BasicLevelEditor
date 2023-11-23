@@ -14,6 +14,7 @@ public class CreatorCustom : Editor
     private UnityEditor.MeshPreview preview;
 
     private bool isStartedLevelEditor = false;
+    private bool isLoadedTexture = false;
 
     private bool _showPrefabButton = false;
 
@@ -39,31 +40,49 @@ public class CreatorCustom : Editor
 
                 isStartedLevelEditor = true;
                 creator.ChangeStartedLevelEditor(isStartedLevelEditor);
-
-
-
                 textureArray = creator.loadTexture();
+
+
             }
             return;
         }
-        base.OnInspectorGUI();
+        //base.OnInspectorGUI();
+
 
 
 
 
         //Level Select Panel
+
+  
+        
         GUIContent ChangeAbleLevelName = new GUIContent("LevelName");
+
         creator.LevelIdx = EditorGUILayout.Popup(ChangeAbleLevelName, creator.LevelIdx, creator.LevelName.ToArray());
         EditorGUILayout.BeginHorizontal();
-        EditorGUILayout.LabelField(creator.SelectedLevel.ToString());
+        EditorGUILayout.LabelField("Selected Level: " + creator.SelectedLevel.ToString());
         if (GUILayout.Button("Select Level"))
         {
             creator.SelectLevel();
         }
         EditorGUILayout.EndHorizontal();
 
+       
 
 
+
+        isLoadedTexture = creator.ReturnIsLoadedTextureBool();
+        if (!isLoadedTexture )
+        {
+            if (GUILayout.Button("Load Prefab "))
+            {
+                creator.loadTexture();
+                
+            }
+            
+             return;
+        }
+        EditorGUILayout.Space(20);
         _showPrefabButton = EditorGUILayout.Foldout(_showPrefabButton, "Game Prefabs");
         if (_showPrefabButton)
         {
@@ -76,7 +95,7 @@ public class CreatorCustom : Editor
                 GUILayout.BeginHorizontal();
                 for (int j = 0; j < 3; j++)
                 {
-                    var _content = new GUIContent("buton ", textureArray[p]); // file name in the resources folder without the (.png) extension
+                    var _content = new GUIContent(" ", textureArray[p]); // file name in the resources folder without the (.png) extension
                     if (GUILayout.Button(_content, GUILayout.Width(100)))
                     {
                         creator.testii(p);
@@ -91,7 +110,7 @@ public class CreatorCustom : Editor
                     GUILayout.BeginHorizontal();
                 for (int j = 0;j < b; j++)
                 {
-                    var _content = new GUIContent("buton ", textureArray[p]);
+                    var _content = new GUIContent(" ", textureArray[p]);
                     if (GUILayout.Button(_content, GUILayout.Width(100)))
                     {
                         creator.testii(p);
@@ -110,13 +129,10 @@ public class CreatorCustom : Editor
         //{
         //    creator.test[i] = EditorGUILayout.ObjectField("Object " + i.ToString(), creator.test[i], typeof(GameObject), false, GUILayout.MinWidth(50), GUILayout.MinHeight(50)) as GameObject;
         //}
-        
-        
 
-        if (GUILayout.Button("Load Texture ", GUILayout.Width(200)))
-        {
-            creator.loadTexture();
-        }
+
+
+        EditorGUILayout.Space(20);
         if (GUILayout.Button("Search Level",GUILayout.Width(200)))
         {
             creator.Search();
