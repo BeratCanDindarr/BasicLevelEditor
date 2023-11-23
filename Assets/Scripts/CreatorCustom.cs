@@ -5,33 +5,30 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
-[CustomEditor(typeof(Creator))]
+[CustomEditor(typeof(Creator)),CanEditMultipleObjects]
+
 public class CreatorCustom : Editor
 {
-    Creator creator;
-    Editor gameObjectEditor;
-    private PreviewRenderUtility previewRenderUtility;
-    private UnityEditor.MeshPreview preview;
-
+    private Creator _creator;
     private bool isStartedLevelEditor = false;
     private bool isLoadedTexture = false;
-
     private bool _showPrefabButton = false;
-
-    List<Texture2D> textureArray;
+    private List<Texture2D> _textureArray;
 
 
 
 
     private void OnEnable()
     {
-        creator = (Creator)target;
+        _creator = (Creator)target;
+        _creator.Init();
+        Debug.Log("Creator created");
         
     }
     
     public override void OnInspectorGUI()
     {
-        isStartedLevelEditor = creator.ReturnIsStartedBool();
+        isStartedLevelEditor = _creator.ReturnIsStartedBool();
         if (!isStartedLevelEditor)
         {
             if (GUILayout.Button("Start Level Editor"))
@@ -39,54 +36,64 @@ public class CreatorCustom : Editor
 
 
                 isStartedLevelEditor = true;
-                creator.ChangeStartedLevelEditor(isStartedLevelEditor);
-                textureArray = creator.loadTexture();
+                _creator.ChangeStartedLevelEditor(isStartedLevelEditor);
+                _textureArray = _creator.loadTexture();
 
 
             }
             return;
         }
-        //base.OnInspectorGUI();
-
-
-
-
-
-        //Level Select Panel
 
   
         
         GUIContent ChangeAbleLevelName = new GUIContent("LevelName");
 
-        creator.LevelIdx = EditorGUILayout.Popup(ChangeAbleLevelName, creator.LevelIdx, creator.LevelName.ToArray());
+        _creator.LevelIdx = EditorGUILayout.Popup(ChangeAbleLevelName, _creator.LevelIdx, _creator.LevelName.ToArray());
         EditorGUILayout.BeginHorizontal();
-        EditorGUILayout.LabelField("Selected Level: " + creator.SelectedLevel.ToString());
+        EditorGUILayout.LabelField("Selected Level: " + _creator.SelectedLevel.ToString());
         if (GUILayout.Button("Select Level"))
         {
-            creator.SelectLevel();
+            _creator.SelectLevel();
+        }
+        EditorGUILayout.EndHorizontal();
+        if (GUILayout.Button("Create Level"))
+        {
+            _creator.Create();
+        }
+
+        EditorGUILayout.BeginHorizontal();
+        if (GUILayout.Button("Save Level", GUILayout.Width(200)))
+        {
+            _creator.Save();
+        }
+        if (GUILayout.Button("Load Level", GUILayout.Width(200)))
+        {
+            _creator.Load();
+        }
+        if (GUILayout.Button("Clear Level Data", GUILayout.Width(200)))
+        {
+            _creator.ClearLevel();
         }
         EditorGUILayout.EndHorizontal();
 
-       
 
-
-
-        isLoadedTexture = creator.ReturnIsLoadedTextureBool();
-        if (!isLoadedTexture )
-        {
-            if (GUILayout.Button("Load Prefab "))
-            {
-                creator.loadTexture();
-                
-            }
-            
-             return;
-        }
         EditorGUILayout.Space(20);
+
+        
+        
+       
+        if (GUILayout.Button("Load Prefab "))
+        {
+                
+            _textureArray = _creator.loadTexture();
+        }
+            
+        
+        
         _showPrefabButton = EditorGUILayout.Foldout(_showPrefabButton, "Game Prefabs");
         if (_showPrefabButton)
         {
-                int arrayLenght = textureArray.Count;
+                int arrayLenght = _textureArray.Count;
                 int a = arrayLenght / 3;
                 int b = arrayLenght % 3;
                 int p = 0;
@@ -95,10 +102,10 @@ public class CreatorCustom : Editor
                 GUILayout.BeginHorizontal();
                 for (int j = 0; j < 3; j++)
                 {
-                    var _content = new GUIContent(" ", textureArray[p]); // file name in the resources folder without the (.png) extension
+                    var _content = new GUIContent(" ", _textureArray[p]); 
                     if (GUILayout.Button(_content, GUILayout.Width(100)))
                     {
-                        creator.testii(p);
+                        _creator.SelectedPrefab(p);
                     }
                     p++;
                 }
@@ -110,10 +117,10 @@ public class CreatorCustom : Editor
                     GUILayout.BeginHorizontal();
                 for (int j = 0;j < b; j++)
                 {
-                    var _content = new GUIContent(" ", textureArray[p]);
+                    var _content = new GUIContent(" ", _textureArray[p]);
                     if (GUILayout.Button(_content, GUILayout.Width(100)))
                     {
-                        creator.testii(p);
+                        _creator.SelectedPrefab(p);
                     }
                     p++;
                 }
@@ -122,49 +129,29 @@ public class CreatorCustom : Editor
         }
 
 
-        //int size = EditorGUILayout.IntField("object size", creator.test.Length);
-        //if (creator.test != null && size != creator.test.Length)
-        //    creator.test = new GameObject[size];
-        //for (int i = 0; i < size; i++)
-        //{
-        //    creator.test[i] = EditorGUILayout.ObjectField("Object " + i.ToString(), creator.test[i], typeof(GameObject), false, GUILayout.MinWidth(50), GUILayout.MinHeight(50)) as GameObject;
-        //}
-
-
 
         EditorGUILayout.Space(20);
-        if (GUILayout.Button("Search Level",GUILayout.Width(200)))
-        {
-            creator.Search();
-        }
-        if (GUILayout.Button("Create Level", GUILayout.Width(200)))
-        {
-            creator.Create();
-        }
+        // if (GUILayout.Button("Search Level",GUILayout.Width(200)))
+        // {
+        //     _creator.Search();
+        // }
+        
+        EditorGUILayout.BeginHorizontal();
         if (GUILayout.Button("Scene Clear", GUILayout.Width(200)))
         {
-            creator.Clear();
+            _creator.Clear();
         }
-        if (GUILayout.Button("Save Level", GUILayout.Width(200)))
-        {
-            creator.Save();
-        }
-        if (GUILayout.Button("Load Level", GUILayout.Width(200)))
-        {
-            creator.Load();
-        }
+        
+       
         if (GUILayout.Button("Delete Selected Obj", GUILayout.Width(200)))
         {
-            creator.DeleteSelectedObj();
+            _creator.DeleteSelectedObj();
         }
-        if (GUILayout.Button("Clear Level Obj", GUILayout.Width(200)))
-        {
-            creator.ClearLevel();
-        }
+        EditorGUILayout.EndHorizontal();
         if (GUILayout.Button("Stop Level Editor"))
         {
             isStartedLevelEditor = false;
-            creator.ChangeStartedLevelEditor(isStartedLevelEditor);
+            _creator.ChangeStartedLevelEditor(isStartedLevelEditor);
         }
 
     }
