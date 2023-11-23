@@ -25,16 +25,16 @@ public class CreatorCustom : Editor
     private void OnEnable()
     {
         creator = (Creator)target;
-        isStartedLevelEditor = creator.ReturnIsStartedBool();
+        
     }
     
     public override void OnInspectorGUI()
     {
+        isStartedLevelEditor = creator.ReturnIsStartedBool();
         if (!isStartedLevelEditor)
         {
             if (GUILayout.Button("Start Level Editor"))
             {
-                isStartedLevelEditor = creator.ReturnIsStartedBool();
 
 
                 isStartedLevelEditor = true;
@@ -49,7 +49,20 @@ public class CreatorCustom : Editor
         base.OnInspectorGUI();
 
 
-      
+
+
+        //Level Select Panel
+        GUIContent ChangeAbleLevelName = new GUIContent("LevelName");
+        creator.LevelIdx = EditorGUILayout.Popup(ChangeAbleLevelName, creator.LevelIdx, creator.LevelName.ToArray());
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField(creator.SelectedLevel.ToString());
+        if (GUILayout.Button("Select Level"))
+        {
+            creator.SelectLevel();
+        }
+        EditorGUILayout.EndHorizontal();
+
+
 
         _showPrefabButton = EditorGUILayout.Foldout(_showPrefabButton, "Game Prefabs");
         if (_showPrefabButton)
@@ -75,16 +88,17 @@ public class CreatorCustom : Editor
 
 
             }
+                    GUILayout.BeginHorizontal();
                 for (int j = 0;j < b; j++)
                 {
-                    var _content = new GUIContent("buton ", textureArray[j]);
-                    GUILayout.BeginHorizontal();
-                    if (GUILayout.Button(_content))
+                    var _content = new GUIContent("buton ", textureArray[p]);
+                    if (GUILayout.Button(_content, GUILayout.Width(100)))
                     {
-                        creator.testii(j);
+                        creator.testii(p);
                     }
-                    GUILayout.EndHorizontal();
+                    p++;
                 }
+                    GUILayout.EndHorizontal();
 
         }
 
@@ -96,16 +110,12 @@ public class CreatorCustom : Editor
         //{
         //    creator.test[i] = EditorGUILayout.ObjectField("Object " + i.ToString(), creator.test[i], typeof(GameObject), false, GUILayout.MinWidth(50), GUILayout.MinHeight(50)) as GameObject;
         //}
+        
+        
 
-        GUIContent ChangeAbleLevelName = new GUIContent("LevelName");
-        creator.LevelIdx = EditorGUILayout.Popup(ChangeAbleLevelName, creator.LevelIdx, creator.LevelName.ToArray());
-        if (GUILayout.Button("Test Level", GUILayout.Width(200)))
+        if (GUILayout.Button("Load Texture ", GUILayout.Width(200)))
         {
             creator.loadTexture();
-        }
-        if (GUILayout.Button("Select Level", GUILayout.Width(200)))
-        {
-            creator.SelectLevel();
         }
         if (GUILayout.Button("Search Level",GUILayout.Width(200)))
         {

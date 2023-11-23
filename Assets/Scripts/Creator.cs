@@ -8,6 +8,7 @@ using System.IO;
 using System;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Linq;
+using Unity.VisualScripting;
 
 #if UNITY_EDITOR
 [ExecuteInEditMode()]
@@ -18,11 +19,16 @@ public class Creator : MonoBehaviour
     public Texture2D test2D;
 
     public GameObject SquareGameObject;
+    public GameObject[] ObjPrefabs;
+    private int selectedPrefabObjValue = 0;
+
+
     public GameObject[] test;
     private Camera _mainCam;
 
     public Mesh mesh;
-    
+
+    public List<LevelObj> newLevelObj;
 
     public List<GameObject> CreatedObj;
 
@@ -37,6 +43,9 @@ public class Creator : MonoBehaviour
 
 
     List<Texture2D> PrefabTexture = new List<Texture2D>();
+
+
+    List<string> LoadedPrefabsDirs;
 
 
     public int LevelIdx = 0;
@@ -75,8 +84,11 @@ public class Creator : MonoBehaviour
             {
                 if (SelectedLevel != null)
                 {
-                    Vector3 objPosition = new Vector3(hit.point.x, hit.point.y + (SquareGameObject.transform.localScale.y / 2), hit.point.z);
-                    ItemCreate(SquareGameObject,objPosition);
+                    MeshRenderer renderer = ObjPrefabs[selectedPrefabObjValue].GetComponent<MeshRenderer>();
+                    float y = renderer.bounds.size.y;
+                    Vector3 objPosition = new Vector3(hit.point.x, hit.point.y + (y / 2), hit.point.z);
+                    ItemCreate(ObjPrefabs[selectedPrefabObjValue], objPosition);
+                    AddLevelObj(selectedPrefabObjValue,objPosition);
 
                 }
                 else
@@ -120,6 +132,7 @@ public class Creator : MonoBehaviour
             DestroyImmediate(CreatedObj[i]);
             
         }
+        newLevelObj.Clear();
         CreatedObj.Clear();
         Debug.Log("Clear");
         
@@ -131,13 +144,26 @@ public class Creator : MonoBehaviour
         
         for (int i = 0; i < CreatedObj.Count; i++)
         {
-            LevelObj newLevel = new LevelObj();
-            newLevel.Obj = SquareGameObject;
-            newLevel.pos = CreatedObj[i].transform.position;
-            SelectedLevel.AddNewObj(newLevel);
+            //LevelObj newLevel = new LevelObj();
+            //newLevel.Obj = CreatedObj[i];
+            //newLevel.pos = CreatedObj[i].transform.position;
+            SelectedLevel.AddNewObj(newLevelObj[i]);
         }
         
         Debug.Log("Save");
+    }
+
+    private void AddLevelObj(int prefabValue, Vector3 pos)
+    {
+        if (newLevelObj == null)
+        {
+            newLevelObj = new List<LevelObj>();
+        }
+        LevelObj newLevel = new LevelObj();
+        
+        newLevel.Obj = AssetDatabase.LoadAssetAtPath < GameObject > (LoadedPrefabsDirs[prefabValue]);
+        newLevel.pos = pos;
+        newLevelObj.Add(newLevel);
     }
     public void Search()
     {
@@ -164,17 +190,19 @@ public class Creator : MonoBehaviour
     {
         for (int i = 0; i<SelectedLevel.objs.Count;i++)
         {
-            ItemCreate(SquareGameObject, SelectedLevel.objs[i].pos);
+            ItemCreate(SelectedLevel.objs[i].Obj, SelectedLevel.objs[i].pos);
         }
         Debug.Log("Load");
     }
     private void ItemCreate(GameObject prefab,Vector3 pos)
     {
-        GameObject obj = Instantiate(prefab,pos,transform.rotation);
+        GameObject obj = Instantiate(prefab,pos,prefab.transform.rotation);
         CreatedObj.Add(obj);
+
     }
     public void SelectLevel()
     {
+        
         foreach (LevelData data in levels)
         {
             if (data.name == LevelName[LevelIdx])
@@ -184,13 +212,20 @@ public class Creator : MonoBehaviour
 
             }
         }
-        Debug.Log("Select level");
+        //Debug.Log("Select level");
     }
     public void DeleteSelectedObj()
     {
         if (SelectedObj != null)
         {
             CreatedObj.Remove(SelectedObj);
+            for (int i = 0; i< newLevelObj.Count;i++)
+            {
+                if (newLevelObj[i].pos == SelectedObj.transform.position)
+                {
+                    newLevelObj.RemoveAt(i);
+                }
+            }
             DestroyImmediate(SelectedObj);
             Debug.Log("SelectedObj Silindi");
         }
@@ -224,15 +259,22 @@ public class Creator : MonoBehaviour
         }
         var dirs = Directory.EnumerateFiles("Assets/Resources/Prefabs/", "*.*", SearchOption.AllDirectories)
             .Where(s => s.EndsWith(".prefab"));
-       
-        
+
         foreach (string dir in dirs)
         {
             PrefabTexture.Add(GetPrefabPreview(dir));
+            LoadedPrefabsDirs.Add(dir);
         }
 
         return PrefabTexture;
     }
+    public void LoadPrefabs()
+    {
+        ObjPrefabs = Resources.LoadAll<GameObject>("Prefabs");
+        Debug.Log("Load Prefabs");
+    }
+
+
     static Texture2D GetPrefabPreview(string path)
     {
         Debug.Log("Generate preview for " + path);
@@ -245,6 +287,13 @@ public class Creator : MonoBehaviour
     }
     public void testii(int a)
     {
+        if (ObjPrefabs.Length == 0)
+        {
+            LoadPrefabs();
+        }
+
+        SquareGameObject = ObjPrefabs[a];
+        selectedPrefabObjValue = a;
         Debug.Log(a);
     }
 }
