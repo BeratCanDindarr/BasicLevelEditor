@@ -3,42 +3,49 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//Level Data
+namespace BasicLevelEditor.CustomLevelEditor.Data{
 
-[CreateAssetMenu(menuName ="Create/Create Level",fileName ="Level")]
-public class LevelData : ScriptableObject
-{
+    //Level Data
 
-
-    
-    public List<LevelObj> objs;
-    
-
-    public void AddNewObj(LevelObj levelObj)
+    [CreateAssetMenu(menuName ="Create/Create Level",fileName ="Level")]
+    public class LevelData : ScriptableObject
     {
-        if (objs== null)
+
+
+        //Container that holds the position and type of created game objects
+        public List<LevelObj> objs;
+        
+        //Code that assigns the created object to the object
+        public void AddNewObj(LevelObj levelObj)
         {
-            CreateList();
+            if (objs== null)
+            {
+                CreateList();
+            }
+            objs.Add(levelObj);
         }
-        objs.Add(levelObj);
-    }
-    public void ClearObjects()
-    {
-        if (objs != null)
+
+        //Delete all objects
+        public void ClearObjects()
         {
-            objs.Clear();
+            if (objs != null)
+            {
+                objs.Clear();
+            }
+        }
+
+        //when list is empty, this code running  
+        private void CreateList()
+        {
+            objs = new List<LevelObj>();
         }
     }
-    private void CreateList()
-    {
-        objs = new List<LevelObj>();
-    }
+
+        //Data that holds the position and type of created game objects
+        [Serializable]
+        public class LevelObj
+        {
+            public GameObject Obj;
+            public Vector3 pos; 
+        }   
 }
-
-
-    [Serializable]
-    public class LevelObj
-    {
-        public GameObject Obj;
-        public Vector3 pos; 
-    }
