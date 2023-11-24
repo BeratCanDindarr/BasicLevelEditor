@@ -14,6 +14,11 @@ using Unity.VisualScripting;
 [ExecuteInEditMode()]
 public class Creator : MonoBehaviour
 {
+    public static Creator Instance;
+
+    Creator(){
+        Instance = this;
+    }
     //Folder in prefabs
     public GameObject[] ObjPrefabs;
 
@@ -66,6 +71,7 @@ public class Creator : MonoBehaviour
     {
         if (!_isStartedLevelEditor)
         {
+            
             return;
         }
         if (Event.current.type == EventType.Layout || Event.current.type == EventType.Repaint)
@@ -132,7 +138,13 @@ public class Creator : MonoBehaviour
         _newLevelObj.Clear();
         _createdObj.Clear();
         Debug.Log("Clear");
+
+         LevelData denemeeeee = new LevelData();
+         _levels= _loadDirectory.ResourcesLoadAll<LevelData>("Level");
         
+        //_loadDirectory = new LoadFileFromDirectory();
+        string[] test = _loadDirectory.test<string>("Naber");
+        Debug.Log(test[0]);
     }
 
 
@@ -167,7 +179,9 @@ public class Creator : MonoBehaviour
         {
             LevelName.Clear();
         }
-        _levels = Resources.LoadAll<LevelData>("Level");
+        //_levels= _loadDirectory.ResourcesLoadAll("Level");//Resources.LoadAll<LevelData>("Level");
+        
+         _levels= _loadDirectory.ResourcesLoadAll<LevelData>("Level");
         Debug.Log(_levels.Length);
         foreach (LevelData data in _levels)
         {
@@ -261,10 +275,13 @@ public class Creator : MonoBehaviour
             isLoadedTexture = false;
             Debug.LogError("folder is empty please add the prefabs this folder Resources/Prefabs");
         }
+        if(_loadedPrefabsDirs  == null   ){
+            _loadedPrefabsDirs = new List<string>();
+        }
         foreach (string dir in dirs)
         {
-            _prefabTexture.Add(GetPrefabPreview(dir));
             _loadedPrefabsDirs.Add(dir);
+            _prefabTexture.Add(GetPrefabPreview(dir));
         }
 
         return _prefabTexture;
@@ -278,7 +295,7 @@ public class Creator : MonoBehaviour
     }
 
 
-    private Texture2D GetPrefabPreview(string path)
+    public static Texture2D GetPrefabPreview(string path)
     {
         Debug.Log("Generate preview for " + path);
         GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
@@ -286,6 +303,11 @@ public class Creator : MonoBehaviour
         var editor = UnityEditor.Editor.CreateEditor(prefab);
         Texture2D tex = editor.RenderStaticPreview(path, null, 200, 200);
         EditorWindow.DestroyImmediate(editor);
+        
+        if(tex == null){
+            
+            Debug.Log("Texture Not initialize");
+        }
         return tex;
     }
     public void SelectedPrefab(int a)

@@ -5,7 +5,7 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
-[CustomEditor(typeof(Creator)),CanEditMultipleObjects]
+[CustomEditor(typeof(Creator))]
 
 public class CreatorCustom : Editor
 {
@@ -18,16 +18,11 @@ public class CreatorCustom : Editor
 
 
 
-    private void OnEnable()
-    {
-        _creator = (Creator)target;
-        _creator.Init();
-        Debug.Log("Creator created");
-        
-    }
+   
     
     public override void OnInspectorGUI()
     {
+        _creator = (Creator)target;
         isStartedLevelEditor = _creator.ReturnIsStartedBool();
         if (!isStartedLevelEditor)
         {
@@ -35,16 +30,19 @@ public class CreatorCustom : Editor
             {
 
 
+                 _creator.Init();
                 isStartedLevelEditor = true;
                 _creator.ChangeStartedLevelEditor(isStartedLevelEditor);
+                
                 _textureArray = _creator.loadTexture();
+                _creator.LoadPrefabs();
 
 
             }
             return;
         }
 
-  
+    
         
         GUIContent ChangeAbleLevelName = new GUIContent("LevelName");
 
@@ -89,6 +87,7 @@ public class CreatorCustom : Editor
         }
             
         
+         
         
         _showPrefabButton = EditorGUILayout.Foldout(_showPrefabButton, "Game Prefabs");
         if (_showPrefabButton)
