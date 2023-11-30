@@ -6,6 +6,7 @@ using System;
 using System.Linq;
 using BasicLevelEditor.CustomLevelEditor.Data;
 using BasicLevelEditor.CustomLevelEditor.LoadFromFileSystem;
+using Unity.VisualScripting;
 
 
 
@@ -62,7 +63,7 @@ namespace BasicLevelEditor.CustomLevelEditor{
 
 
 
-        private bool _isStartedLevelEditor = false;
+        private   bool _isStartedLevelEditor = false;
 
         private bool isLoadedTexture = false;
 
@@ -97,6 +98,8 @@ namespace BasicLevelEditor.CustomLevelEditor{
         public void Init(){
             _mainCam = Camera.main;
             _loadDirectory = new LoadFileFromDirectory();
+            _isStartedLevelEditor = false;
+            _createdObj = new List<GameObject>();
         }
 
         private void OnGUI()
@@ -129,9 +132,12 @@ namespace BasicLevelEditor.CustomLevelEditor{
                     {
                         MeshRenderer renderer = ObjPrefabs[_selectedPrefabObjValue].GetComponent<MeshRenderer>();
                         float y = renderer.bounds.size.y;
-                        Vector3 objPosition = new Vector3(_hit.point.x, _hit.point.y + (y / 2), _hit.point.z);
+                        float x = Mathf.Floor(_hit.point.x) + 0.5f;
+                        float z = Mathf.Floor(_hit.point.z) + 0.5f;
+                        Vector3 objPosition = new Vector3(x, _hit.point.y + (y / 2), z);
                         ItemCreate(ObjPrefabs[_selectedPrefabObjValue], objPosition);
                         AddLevelObj(_selectedPrefabObjValue,objPosition);
+                        
 
                     }
                     else
@@ -151,9 +157,11 @@ namespace BasicLevelEditor.CustomLevelEditor{
         {
             Debug.Log("Create");
             LevelData level = ScriptableObject.CreateInstance<LevelData>();
+            
             _loadDirectory.CreateScriptableObjectInDirectory("LevelName",level);
+            level.LevelID = _levels.Length;
             SelectedLevel = level;
-            LevelIdx = _levels.Length-1;
+            LevelIdx = _levels.Length;
             Search();
             
             
@@ -171,12 +179,12 @@ namespace BasicLevelEditor.CustomLevelEditor{
             _createdObj.Clear();
             Debug.Log("Clear");
 
-            LevelData denemeeeee = new LevelData();
-            _levels= _loadDirectory.ResourcesLoadAll<LevelData>("Level");
+            // LevelData denemeeeee = new LevelData();
+            // _levels= _loadDirectory.ResourcesLoadAll<LevelData>("Level");
             
             //_loadDirectory = new LoadFileFromDirectory();
-            string[] test = _loadDirectory.test<string>("Naber");
-            Debug.Log(test[0]);
+            // string[] test = _loadDirectory.test<string>("Naber");
+            // Debug.Log(test[0]);
         }
 
 
@@ -207,18 +215,35 @@ namespace BasicLevelEditor.CustomLevelEditor{
 
         public void Search()
         {
-            if (LevelName.Count > 0)
+            if (LevelName.Count != 0)
             {
                 LevelName.Clear();
             }
+            //LevelData[] newLevels = _loadDirectory.ResourcesLoadAll<LevelData>("Level");
+
             //_levels= _loadDirectory.ResourcesLoadAll("Level");//Resources.LoadAll<LevelData>("Level");
             
-            _levels= _loadDirectory.ResourcesLoadAll<LevelData>("Level");
+            LevelData[] newLevels = _loadDirectory.ResourcesLoadAll<LevelData>("Level");
+            //_levels = new LevelData[newLevels.Length];
+            _levels = newLevels.OrderBy(go => go.LevelID).ToArray();
+            // SelectedLevel = null;
+            // LevelIdx = 0;
             Debug.Log(_levels.Length);
-            foreach (LevelData data in _levels)
-            {
-                LevelName.Add(data.name);
-            }
+             foreach (LevelData data in _levels)
+             {
+                 if(data == null){
+                     Debug.Log("Data Obj is null");
+                 }
+                
+                 LevelName.Add(data.name);
+             }
+            // for(int i = 0;i < newLevels.Length; i++){
+            //     if(newLevels[i] == null){
+            //         Debug.Log("Data Obj is null");
+            //     }
+            //     _levels[i] = newLevels[i];
+            //     LevelName.Add(newLevels[i].name);
+            // }
             
         }
 

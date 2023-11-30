@@ -11,6 +11,7 @@ namespace BasicLevelEditor.CustomLevelEditor{
     public class CreatorCustom : Editor
     {
         //Base Script
+
         private Creator _creator;
 
         private bool isStartedLevelEditor = false;
@@ -27,6 +28,8 @@ namespace BasicLevelEditor.CustomLevelEditor{
         
         public override void OnInspectorGUI()
         {
+                base.OnInspectorGUI();
+
             _creator = (Creator)target;
             isStartedLevelEditor = _creator.ReturnIsStartedBool();
             if (!isStartedLevelEditor)
@@ -36,9 +39,9 @@ namespace BasicLevelEditor.CustomLevelEditor{
 
 
                     _creator.Init();
+                    _creator.Search();
                     isStartedLevelEditor = true;
                     _creator.ChangeStartedLevelEditor(isStartedLevelEditor);
-                    
                     _textureArray = _creator.loadTexture();
                     _creator.LoadPrefabs();
 
@@ -53,7 +56,7 @@ namespace BasicLevelEditor.CustomLevelEditor{
 
             _creator.LevelIdx = EditorGUILayout.Popup(ChangeAbleLevelName, _creator.LevelIdx, _creator.LevelName.ToArray());
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("Selected Level: " + _creator.SelectedLevel.ToString());
+            //EditorGUILayout.LabelField("Selected Level: " + _creator.SelectedLevel.ToString());
             if (GUILayout.Button("Select Level"))
             {
                 _creator.SelectLevel();
