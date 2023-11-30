@@ -11,7 +11,7 @@ namespace BasicLevelEditor.CustomLevelEditor.Data{
     public class LevelData : ScriptableObject
     {
 
-
+        public int LevelID;
         //Container that holds the position and type of created game objects
         public List<LevelObj> objs;
         
