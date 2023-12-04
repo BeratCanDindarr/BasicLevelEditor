@@ -44,39 +44,60 @@ namespace BasicLevelEditor.CustomLevelEditor{
                     _creator.ChangeStartedLevelEditor(isStartedLevelEditor);
                     _textureArray = _creator.loadTexture();
                     _creator.LoadPrefabs();
+                    _creator.SetIntegrationMode(INTEGRATION_MODE.NULL);
 
 
                 }
                 return;
             }
 
-        
+
+            GUILayout.BeginHorizontal();
+            if(GUILayout.Button("SELECT",GUILayout.Width(50),GUILayout.Height(50))){
+                _creator.SetIntegrationMode(INTEGRATION_MODE.SELECT);
+            }
+            if(GUILayout.Button("ROTATE",GUILayout.Width(50),GUILayout.Height(50))){
+                _creator.SetIntegrationMode(INTEGRATION_MODE.ROTATE);
+            }
+            if(GUILayout.Button("DRAW",GUILayout.Width(50),GUILayout.Height(50))){
+                _creator.SetIntegrationMode(INTEGRATION_MODE.DRAW);
+            }
+            if(GUILayout.Button("DELETE",GUILayout.Width(50),GUILayout.Height(50))){
+                _creator.SetIntegrationMode(INTEGRATION_MODE.DELETE);
+            }
+
             
+            GUILayout.EndHorizontal();
+            GUILayout.Label("Selected Mode: " + _creator._selectedMode.ToString());
+            EditorGUILayout.Space(50);
+
+        
             GUIContent ChangeAbleLevelName = new GUIContent("LevelName");
 
             _creator.LevelIdx = EditorGUILayout.Popup(ChangeAbleLevelName, _creator.LevelIdx, _creator.LevelName.ToArray());
             EditorGUILayout.BeginHorizontal();
-            //EditorGUILayout.LabelField("Selected Level: " + _creator.SelectedLevel.ToString());
+            EditorGUILayout.LabelField("Selected Level: " + _creator.SelectedLevel.name);
             if (GUILayout.Button("Select Level"))
             {
                 _creator.SelectLevel();
             }
             EditorGUILayout.EndHorizontal();
+
             if (GUILayout.Button("Create Level"))
             {
                 _creator.Create();
             }
 
             EditorGUILayout.BeginHorizontal();
-            if (GUILayout.Button("Save Level", GUILayout.Width(200)))
+            if (GUILayout.Button("Save Level"))
             {
                 _creator.Save();
             }
-            if (GUILayout.Button("Load Level", GUILayout.Width(200)))
+            if (GUILayout.Button("Load Level"))
             {
                 _creator.Load();
             }
-            if (GUILayout.Button("Clear Level Data", GUILayout.Width(200)))
+            if (GUILayout.Button("Clear Level Data"))
             {
                 _creator.ClearLevel();
             }
@@ -144,13 +165,13 @@ namespace BasicLevelEditor.CustomLevelEditor{
             // }
             
             EditorGUILayout.BeginHorizontal();
-            if (GUILayout.Button("Scene Clear", GUILayout.Width(200)))
+            if (GUILayout.Button("Scene Clear"))
             {
                 _creator.Clear();
             }
             
         
-            if (GUILayout.Button("Delete Selected Obj", GUILayout.Width(200)))
+            if (GUILayout.Button("Delete Selected Obj"))
             {
                 _creator.DeleteSelectedObj();
             }
@@ -162,7 +183,7 @@ namespace BasicLevelEditor.CustomLevelEditor{
             }
 
         }
-
+        
         
     
     }

@@ -13,6 +13,19 @@ using Unity.VisualScripting;
 namespace BasicLevelEditor.CustomLevelEditor{
 
 
+    public enum INTEGRATION_MODE{
+        SELECT,
+        ROTATE,
+        DRAW,
+        DELETE,
+        
+        NULL,
+
+
+    }
+
+
+
     #if UNITY_EDITOR
     [ExecuteInEditMode()]
     public class Creator : MonoBehaviour
@@ -29,11 +42,23 @@ namespace BasicLevelEditor.CustomLevelEditor{
 
         //Created Gameobjects in scene
         private List<GameObject> _createdObj;
+        public List<GameObject> CreatedObjects{
+            get{return _createdObj;}
+            set{_createdObj = value;}
+        }
         //Clicked Obj holder
         private GameObject _selectedObj;
+        public GameObject SelectedObject{
+            get{return _selectedObj;}
+            set{_selectedObj = value;}
+        }
 
         //Selected obj value for prefabs loading
         private int _selectedPrefabObjValue = 0;
+        public int SelectedPrefabObjValue{
+            get {return _selectedPrefabObjValue;}
+            set {_selectedPrefabObjValue = value;}
+        }
         #endregion
 
         #region  Texture for GameObjects
@@ -67,11 +92,14 @@ namespace BasicLevelEditor.CustomLevelEditor{
 
         private bool isLoadedTexture = false;
 
-
+        private bool _isDragging = false;
+        public INTEGRATION_MODE _selectedMode = INTEGRATION_MODE.NULL;
         
 
 
-
+        private IInteraktable _selectedInteratClass;
+        
+        
 
 
 
@@ -99,6 +127,7 @@ namespace BasicLevelEditor.CustomLevelEditor{
             _mainCam = Camera.main;
             _loadDirectory = new LoadFileFromDirectory();
             _isStartedLevelEditor = false;
+            
             _createdObj = new List<GameObject>();
         }
 
@@ -113,45 +142,53 @@ namespace BasicLevelEditor.CustomLevelEditor{
             {
                 UnityEditor.EditorUtility.SetDirty(this);
             }
-            else if (Event.current.type == EventType.MouseDown)
-            {
-                DoMouseDown();
-            }
-        }
-
-        private void DoMouseDown()
-        {
-            Vector2 mousePos = Event.current.mousePosition;
-            mousePos.y = Screen.height - mousePos.y;
-            Ray ray = Camera.main.ScreenPointToRay(mousePos);
-            if (Physics.Raycast(ray, out _hit, 100))
-            {
-                if (_hit.collider.CompareTag("Ground"))
+            else {
+                if (Event.current.type == EventType.MouseDown)
                 {
-                    if (SelectedLevel != null)
-                    {
-                        MeshRenderer renderer = ObjPrefabs[_selectedPrefabObjValue].GetComponent<MeshRenderer>();
-                        float y = renderer.bounds.size.y;
-                        float x = Mathf.Floor(_hit.point.x) + 0.5f;
-                        float z = Mathf.Floor(_hit.point.z) + 0.5f;
-                        Vector3 objPosition = new Vector3(x, _hit.point.y + (y / 2), z);
-                        ItemCreate(ObjPrefabs[_selectedPrefabObjValue], objPosition);
-                        AddLevelObj(_selectedPrefabObjValue,objPosition);
-                        
-
-                    }
-                    else
-                    {
-                        Debug.Log("Bir Level Olu�turun Veya Se�in");
-                    }
-
+                    //DoMouseDown();
+                    //MouseDownIntegrationSelected();
+                    _selectedInteratClass.MouseDown();
                 }
-                else
-                {
-                    _selectedObj = _hit.collider.gameObject;
+                if(Event.current.type == EventType.MouseDrag){
+                
+                    _selectedInteratClass.MouseDrag();
+                    Debug.Log("Dragging");
+                }
+                if(Event.current.type == EventType.MouseUp){
+                    _selectedInteratClass.MouseUp();
                 }
             }
+            
         }
+        private void MouseDownIntegrationSelected(){
+            switch(_selectedMode){
+                case INTEGRATION_MODE.SELECT:
+                _selectedInteratClass = new SelectInterakt(this,Camera.main);
+                
+                Debug.Log("MODE:Select");
+                break;
+                case INTEGRATION_MODE.DRAW:
+                _selectedInteratClass = new DrawInterakt(this,Camera.main);
+                 Debug.Log("MODE:Draw");
+                break;
+                case INTEGRATION_MODE.DELETE:
+                 Debug.Log("MODE:Delete");
+                break;
+                case INTEGRATION_MODE.ROTATE:
+                 Debug.Log("MODE:Rotate");
+                break;
+                default:
+                    Debug.Log("Integration Mode is null");
+                break;
+
+            }
+
+            
+        }
+
+
+        
+
 
         public void Create()
         {
@@ -178,13 +215,6 @@ namespace BasicLevelEditor.CustomLevelEditor{
             _newLevelObj.Clear();
             _createdObj.Clear();
             Debug.Log("Clear");
-
-            // LevelData denemeeeee = new LevelData();
-            // _levels= _loadDirectory.ResourcesLoadAll<LevelData>("Level");
-            
-            //_loadDirectory = new LoadFileFromDirectory();
-            // string[] test = _loadDirectory.test<string>("Naber");
-            // Debug.Log(test[0]);
         }
 
 
@@ -199,7 +229,7 @@ namespace BasicLevelEditor.CustomLevelEditor{
             Debug.Log("Save");
         }
 
-        private void AddLevelObj(int prefabValue, Vector3 pos)
+        public void AddLevelObj(int prefabValue, Vector3 pos)
         {
             if (_newLevelObj == null)
             {
@@ -219,15 +249,11 @@ namespace BasicLevelEditor.CustomLevelEditor{
             {
                 LevelName.Clear();
             }
-            //LevelData[] newLevels = _loadDirectory.ResourcesLoadAll<LevelData>("Level");
-
-            //_levels= _loadDirectory.ResourcesLoadAll("Level");//Resources.LoadAll<LevelData>("Level");
-            
+           
             LevelData[] newLevels = _loadDirectory.ResourcesLoadAll<LevelData>("Level");
-            //_levels = new LevelData[newLevels.Length];
+           
             _levels = newLevels.OrderBy(go => go.LevelID).ToArray();
-            // SelectedLevel = null;
-            // LevelIdx = 0;
+           
             Debug.Log(_levels.Length);
              foreach (LevelData data in _levels)
              {
@@ -237,14 +263,6 @@ namespace BasicLevelEditor.CustomLevelEditor{
                 
                  LevelName.Add(data.name);
              }
-            // for(int i = 0;i < newLevels.Length; i++){
-            //     if(newLevels[i] == null){
-            //         Debug.Log("Data Obj is null");
-            //     }
-            //     _levels[i] = newLevels[i];
-            //     LevelName.Add(newLevels[i].name);
-            // }
-            
         }
 
         public void Load()
@@ -256,7 +274,7 @@ namespace BasicLevelEditor.CustomLevelEditor{
             }
             Debug.Log("Load");
         }
-        private void ItemCreate(GameObject prefab,Vector3 pos)
+        public void ItemCreate(GameObject prefab,Vector3 pos)
         {
             GameObject obj = Instantiate(prefab,pos,prefab.transform.rotation);
             
@@ -275,7 +293,6 @@ namespace BasicLevelEditor.CustomLevelEditor{
 
                 }
             }
-            //Debug.Log("Select level");
         }
         public void DeleteSelectedObj()
         {
@@ -290,6 +307,26 @@ namespace BasicLevelEditor.CustomLevelEditor{
                     }
                 }
                 DestroyImmediate(_selectedObj);
+                Debug.Log("_selectedObj Silindi");
+            }
+            else
+            {
+                Debug.Log("Secili obje yok");
+            }
+        }
+        public void TestDeleteSelectedObj()
+        {
+            if (_selectedObj != null)
+            {
+                //_createdObj.Remove(_selectedObj);
+                for (int i = 0; i< _newLevelObj.Count;i++)
+                {
+                    if (_newLevelObj[i].pos == _selectedObj.transform.position)
+                    {
+                        _newLevelObj.RemoveAt(i);
+                    }
+                }
+                //DestroyImmediate(_selectedObj);
                 Debug.Log("_selectedObj Silindi");
             }
             else
@@ -318,15 +355,16 @@ namespace BasicLevelEditor.CustomLevelEditor{
         public List<Texture2D> loadTexture()
         {
             isLoadedTexture = true;
-            //GameObject[] prefabs = Resources.LoadAll<GameObject>("Prefabs/");
-            //string[] paths = new string[prefabs.Length];
 
             if (_prefabTexture != null)
             {
                 _prefabTexture.Clear();
             }
             var dirs = Directory.EnumerateFiles("Assets/Resources/Prefabs/", "*.*", SearchOption.AllDirectories)
+                .OrderBy(s => s).ToArray()
                 .Where(s => s.EndsWith(".prefab"));
+
+            
             if (dirs == null)
             {
                 isLoadedTexture = false;
@@ -335,18 +373,19 @@ namespace BasicLevelEditor.CustomLevelEditor{
             if(_loadedPrefabsDirs  == null   ){
                 _loadedPrefabsDirs = new List<string>();
             }
+            
             foreach (string dir in dirs)
             {
                 _loadedPrefabsDirs.Add(dir);
                 _prefabTexture.Add(GetPrefabPreview(dir));
             }
-
             return _prefabTexture;
         }
         public bool LoadPrefabs()
         {
             
-            ObjPrefabs = Resources.LoadAll<GameObject>("Prefabs");
+            var objPrefabs = Resources.LoadAll<GameObject>("Prefabs");
+            ObjPrefabs = objPrefabs.OrderBy(s => s.name).ToArray();
             Debug.Log(ObjPrefabs is null);
             return ObjPrefabs != null;
         }
@@ -374,6 +413,11 @@ namespace BasicLevelEditor.CustomLevelEditor{
                 LoadPrefabs();
             }
             _selectedPrefabObjValue = a;
+        }
+
+        public void SetIntegrationMode(INTEGRATION_MODE mode){
+            _selectedMode = mode;
+            MouseDownIntegrationSelected();
         }
     }
     #endif

@@ -159,7 +159,7 @@ Light:
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 2
+    m_Type: 0
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
@@ -328,7 +328,7 @@ Transform:
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 20.49, z: -1.28}
+  m_LocalPosition: {x: 0, y: 20.49, z: 1.47}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -431,13 +431,11 @@ MonoBehaviour:
   - {fileID: 5544905145871896904, guid: 28c5b4d17f8ceb2448c630c0c8e44d2d, type: 3}
   - {fileID: 6420874735977527642, guid: 31de44ddd0a2424449528aedee3d1651, type: 3}
   - {fileID: 3710860745648286617, guid: 6361ca3d14b97eb43a7ea5ff52fecc6b, type: 3}
-  SelectedLevel: {fileID: 11400000, guid: 76ae8a0c4f64c2b599fa0dc9ebe74885, type: 2}
-  LevelIdx: 27
+  SelectedLevel: {fileID: 11400000, guid: 4599acc7b28457444a59687c32d8846c, type: 2}
+  LevelIdx: 2
   LevelName:
   - LevelName
-  - LevelName 25
-  - LevelName 26
-  - LevelName 27
+  - LevelName 28
   - LevelName 1
   - LevelName 2
   - LevelName 3
@@ -462,6 +460,10 @@ MonoBehaviour:
   - LevelName 22
   - LevelName 23
   - LevelName 24
+  - LevelName 25
+  - LevelName 26
+  - LevelName 27
+  _selectedMode: 3
 --- !u!1001 &5544905147142880162
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -480,7 +482,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5544905145871896908, guid: 28c5b4d17f8ceb2448c630c0c8e44d2d, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1
+      value: 0.01
       objectReference: {fileID: 0}
     - target: {fileID: 5544905145871896908, guid: 28c5b4d17f8ceb2448c630c0c8e44d2d, type: 3}
       propertyPath: m_LocalPosition.x
