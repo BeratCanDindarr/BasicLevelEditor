@@ -172,6 +172,7 @@ namespace BasicLevelEditor.CustomLevelEditor{
                  Debug.Log("MODE:Draw");
                 break;
                 case INTEGRATION_MODE.DELETE:
+                _selectedInteratClass = new DeleteInterakt(this,Camera.main);
                  Debug.Log("MODE:Delete");
                 break;
                 case INTEGRATION_MODE.ROTATE:
