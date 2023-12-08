@@ -1,6 +1,6 @@
 # BasicLevelEditor
 Update Basic Level Editor - 1.1
-[Screencast from 2023-12-08 19-24-19.webm](https://github.com/BeratCanDindarr/BasicLevelEditor/assets/51453373/3966471d-35e2-41c9-9c8f-7e723509cfc3)
+https://github.com/BeratCanDindarr/BasicLevelEditor/assets/51453373/3966471d-35e2-41c9-9c8f-7e723509cfc3
 
 
 Basic Level Editor - 1.0
