@@ -28,7 +28,7 @@ namespace BasicLevelEditor.CustomLevelEditor{
         
         public override void OnInspectorGUI()
         {
-                base.OnInspectorGUI();
+                //base.OnInspectorGUI();
 
             _creator = (Creator)target;
             isStartedLevelEditor = _creator.ReturnIsStartedBool();
@@ -69,9 +69,9 @@ namespace BasicLevelEditor.CustomLevelEditor{
             
             GUILayout.EndHorizontal();
             GUILayout.Label("Selected Mode: " + _creator._selectedMode.ToString());
-            EditorGUILayout.Space(50);
+            EditorGUILayout.Space(10);
 
-        
+            //Level Data
             GUIContent ChangeAbleLevelName = new GUIContent("LevelName");
 
             _creator.LevelIdx = EditorGUILayout.Popup(ChangeAbleLevelName, _creator.LevelIdx, _creator.LevelName.ToArray());
@@ -102,80 +102,100 @@ namespace BasicLevelEditor.CustomLevelEditor{
                 _creator.ClearLevel();
             }
             EditorGUILayout.EndHorizontal();
-
-
-            EditorGUILayout.Space(20);
-
-            
-            
-        
-            if (GUILayout.Button("Load Prefab "))
+            if (GUILayout.Button("Scene Clear"))
             {
-                    
-                _textureArray = _creator.loadTexture();
+                _creator.Clear();
             }
-                
+
+            EditorGUILayout.Space(50);
             
-            
-            
-            _showPrefabButton = EditorGUILayout.Foldout(_showPrefabButton, "Game Prefabs");
-            if (_showPrefabButton)
-            {
-                    int arrayLenght = _textureArray.Count;
-                    int a = arrayLenght / 3;
-                    int b = arrayLenght % 3;
-                    int p = 0;
-                for (int i = 0; i < a; i++)
+
+            //Selected Mode
+            if(_creator._selectedMode == INTEGRATION_MODE.SELECT){
+                EditorGUILayout.ObjectField(_creator.SelectedObject,typeof(GameObject),true);
+            }
+
+            //Rotate Mode
+            if(_creator._selectedMode == INTEGRATION_MODE.ROTATE){
+
+            }
+            //Draw Mode
+            if(_creator._selectedMode == INTEGRATION_MODE.DRAW){
+
+                   
+
+
+                if (GUILayout.Button("Load Prefab "))
                 {
-                    GUILayout.BeginHorizontal();
-                    for (int j = 0; j < 3; j++)
-                    {
-                        var _content = new GUIContent(" ", _textureArray[p]); 
-                        if (GUILayout.Button(_content, GUILayout.Width(100)))
-                        {
-                            _creator.SelectedPrefab(p);
-                        }
-                        p++;
-                    }
-                    GUILayout.EndHorizontal();
-
-
-
+                        
+                    _textureArray = _creator.loadTexture();
                 }
-                        GUILayout.BeginHorizontal();
-                    for (int j = 0;j < b; j++)
+
+
+                //select Draw Items
+                    _showPrefabButton = EditorGUILayout.Foldout(_showPrefabButton, "Game Prefabs");
+                if (_showPrefabButton)
+                {
+                        int arrayLenght = _textureArray.Count;
+                        int a = arrayLenght / 3;
+                        int b = arrayLenght % 3;
+                        int p = 0;
+                    for (int i = 0; i < a; i++)
                     {
-                        var _content = new GUIContent(" ", _textureArray[p]);
-                        if (GUILayout.Button(_content, GUILayout.Width(100)))
+                        GUILayout.BeginHorizontal();
+                        for (int j = 0; j < 3; j++)
                         {
-                            _creator.SelectedPrefab(p);
+                            var _content = new GUIContent(" ", _textureArray[p]); 
+                            if (GUILayout.Button(_content, GUILayout.Width(100)))
+                            {
+                                _creator.SelectedPrefab(p);
+                            }
+                            p++;
                         }
-                        p++;
-                    }
                         GUILayout.EndHorizontal();
 
+
+
+                    }
+                            GUILayout.BeginHorizontal();
+                        for (int j = 0;j < b; j++)
+                        {
+                            var _content = new GUIContent(" ", _textureArray[p]);
+                            if (GUILayout.Button(_content, GUILayout.Width(100)))
+                            {
+                                _creator.SelectedPrefab(p);
+                            }
+                            p++;
+                        }
+                            GUILayout.EndHorizontal();
+
             }
 
 
 
+
+
+            }
+            //Delete Mode
+            if(_creator._selectedMode == INTEGRATION_MODE.DELETE){
+
+            }
+
+            
+
+
             EditorGUILayout.Space(20);
+
             // if (GUILayout.Button("Search Level",GUILayout.Width(200)))
             // {
             //     _creator.Search();
             // }
             
-            EditorGUILayout.BeginHorizontal();
-            if (GUILayout.Button("Scene Clear"))
-            {
-                _creator.Clear();
-            }
+            
             
         
-            if (GUILayout.Button("Delete Selected Obj"))
-            {
-                _creator.DeleteSelectedObj();
-            }
-            EditorGUILayout.EndHorizontal();
+           
+            
             if (GUILayout.Button("Stop Level Editor"))
             {
                 isStartedLevelEditor = false;

@@ -41,9 +41,15 @@ public abstract class BaseInterakt : IInteraktable
 
    public bool CheckTouches(string touchesObjTag){
     bool success = true;
-    if(!_hit.collider.CompareTag(touchesObjTag)){
-      success = false;
+    if(_hit.collider != null){
+      if(!_hit.collider.CompareTag(touchesObjTag)){
+        success = false;
 
+      }
+      
+    }
+    else{
+      success = false;
     }
 
     return success;

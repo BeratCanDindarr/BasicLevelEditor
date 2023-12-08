@@ -431,8 +431,8 @@ MonoBehaviour:
   - {fileID: 5544905145871896904, guid: 28c5b4d17f8ceb2448c630c0c8e44d2d, type: 3}
   - {fileID: 6420874735977527642, guid: 31de44ddd0a2424449528aedee3d1651, type: 3}
   - {fileID: 3710860745648286617, guid: 6361ca3d14b97eb43a7ea5ff52fecc6b, type: 3}
-  SelectedLevel: {fileID: 11400000, guid: 4599acc7b28457444a59687c32d8846c, type: 2}
-  LevelIdx: 2
+  SelectedLevel: {fileID: 11400000, guid: c4bf9e1dfa8ebaa4cb25286abf3d6b99, type: 2}
+  LevelIdx: 11
   LevelName:
   - LevelName
   - LevelName 28
@@ -463,7 +463,7 @@ MonoBehaviour:
   - LevelName 25
   - LevelName 26
   - LevelName 27
-  _selectedMode: 3
+  _selectedMode: 4
 --- !u!1001 &5544905147142880162
 PrefabInstance:
   m_ObjectHideFlags: 0

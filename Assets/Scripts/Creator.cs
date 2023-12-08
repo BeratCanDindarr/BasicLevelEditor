@@ -240,6 +240,7 @@ namespace BasicLevelEditor.CustomLevelEditor{
             
             newLevel.Obj = _loadDirectory.LoadFromGameObject(_loadedPrefabsDirs[prefabValue]);//AssetDatabase.LoadAssetAtPath < GameObject > (_loadedPrefabsDirs[prefabValue]);
             newLevel.pos = pos;
+            newLevel.objID = prefabValue;
             _newLevelObj.Add(newLevel);
         }
     
@@ -406,6 +407,21 @@ namespace BasicLevelEditor.CustomLevelEditor{
                 Debug.Log("Texture Not initialize");
             }
             return tex;
+        }
+
+        public int GetSelectedObjectID(){
+             int value = 0;
+             for (int i = 0; i< _newLevelObj.Count;i++)
+                {
+                    if (_newLevelObj[i].pos == _selectedObj.transform.position)
+                    {
+                        value = _newLevelObj[i].objID;
+                        Debug.Log(value);
+                    }
+                }
+
+
+            return value;
         }
         public void SelectedPrefab(int a)
         {
