@@ -76,7 +76,13 @@ namespace BasicLevelEditor.CustomLevelEditor{
 
             _creator.LevelIdx = EditorGUILayout.Popup(ChangeAbleLevelName, _creator.LevelIdx, _creator.LevelName.ToArray());
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("Selected Level: " + _creator.SelectedLevel.name);
+            
+            if(_creator.SelectedLevel != null){
+                EditorGUILayout.LabelField("Selected Level: " + _creator.SelectedLevel.name);
+
+            }else{
+                EditorGUILayout.LabelField("Selected Level:  NULL ");
+            }
             if (GUILayout.Button("Select Level"))
             {
                 _creator.SelectLevel();
