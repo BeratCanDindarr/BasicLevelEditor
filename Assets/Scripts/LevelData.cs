@@ -46,6 +46,7 @@ namespace BasicLevelEditor.CustomLevelEditor.Data{
         public class LevelObj
         {
             public GameObject Obj;
+            public int objID;
             public Vector3 pos; 
         }   
 }
