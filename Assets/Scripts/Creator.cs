@@ -83,7 +83,7 @@ namespace BasicLevelEditor.CustomLevelEditor{
         //Selected Level ID
         public int LevelIdx = 0;
         //All levels name holder
-        public List<String> LevelName;
+        public List<String> LevelName = null;
         #endregion
 
 
@@ -128,6 +128,7 @@ namespace BasicLevelEditor.CustomLevelEditor{
             _loadDirectory = new LoadFileFromDirectory();
             _isStartedLevelEditor = false;
             
+            LevelName = new List<string>();
             _createdObj = new List<GameObject>();
         }
 

@@ -14,7 +14,7 @@ public class SelectInterakt : BaseInterakt
     public override void MouseDown()
     {
         base.RayThrowing();
-        if(!_hit.collider == null){
+        if(_hit.collider != null){
             
             if(!CheckTouches("Ground")){
                 _selectedObject = _hit.collider.gameObject;

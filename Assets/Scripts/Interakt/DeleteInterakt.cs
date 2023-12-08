@@ -19,7 +19,7 @@ public class DeleteInterakt : BaseInterakt
     private void DeleteObject(){
         base.RayThrowing();
         if(!CheckTouches("Ground")){
-            _creator.SelectedObject = _hit.collider.gameObject;
+            _creator.SelectedObject = _hit.collider?.gameObject;
             _creator.DeleteSelectedObj();
         }
     }
